@@ -1,3 +1,11 @@
+import {
+  generateAnalysisPrompt,
+  generateCompetitorAnalysisPrompt,
+  generateFitAnalysisPrompt,
+  generateLeanCanvasPrompt,
+  generatePrompt,
+} from "@/lib/utils";
+import { Response1, Response2, Response3, Response4, Response5 } from "@/types";
 import OpenAI from "openai";
 
 const openai = new OpenAI({
@@ -9,9 +17,15 @@ interface Prompt {
   content: string;
 }
 
-const GPT_MODEL: string = "gpt-4-1106-preview";
+const GPT_MODEL = "gpt-4-1106-preview";
 
-export async function getGPTResponse(promptContent: string) {
+const projectDetails = {
+  customer: `Not yet defined. Identifying potential customers interested in purchasing the product obtained from sewage waste can be a challenge. Also, the location of the treatment and transformation plant for sewage waste can influence the profitability and logistics of the project. The availability of adequate infrastructure and accessibility to potential clients is crucial.`,
+  problem: `This is more about the exploration of an opportunity than solving a problem. This initiative seeks to minimize the environmental impact of the utility company by converting waste into valuable and profitable resources.`,
+  solution: `This project is based on obtaining a subproduct from sewage treatment plant waste. The product obtained is in a liquid state, and there are some questions regarding how to go to the market. Some other questions that arise are: eco certification, permits, etc.`,
+};
+
+async function getGPTResponse(promptContent: string) {
   try {
     const chatCompletion = await openai.chat.completions.create({
       model: GPT_MODEL,
@@ -21,15 +35,70 @@ export async function getGPTResponse(promptContent: string) {
           content: promptContent,
         },
       ],
+      response_format: { type: "json_object" },
     });
     const content = chatCompletion.choices[0].message.content;
     if (!content) return null;
-    //info: quick hack using gpt
-    const jsonPart = content.replace("```json\n", "").replace("\n```", "");
-    const jsonObject = JSON.parse(jsonPart);
-    return jsonObject[0];
+    return JSON.parse(content);
   } catch (error) {
     console.error({ error });
-    return null;
+    throw error;
+  }
+}
+
+export async function runAnalysis() {
+  try {
+    const intialPrompt = generatePrompt(
+      projectDetails.problem,
+      projectDetails.customer,
+      projectDetails.solution
+    );
+    const intialPromptResponse = (await getGPTResponse(
+      intialPrompt
+    )) as Response1;
+    const analysisPrompt = generateAnalysisPrompt(intialPromptResponse);
+    const analysisPromptResponse = (await getGPTResponse(
+      analysisPrompt
+    )) as Response2;
+    const fitAnalysisPrompt = generateFitAnalysisPrompt(
+      intialPromptResponse,
+      analysisPromptResponse
+    );
+    const fitAnalysisResponse = (await getGPTResponse(
+      fitAnalysisPrompt
+    )) as Response3;
+    const leanCanvasPrompt = generateLeanCanvasPrompt(
+      projectDetails.problem,
+      projectDetails.customer,
+      projectDetails.solution,
+      intialPromptResponse,
+      analysisPromptResponse,
+      fitAnalysisResponse
+    );
+    const leanCanvasResponse = (await getGPTResponse(
+      leanCanvasPrompt
+    )) as Response4;
+
+    const competitorAnalysisPrompt = generateCompetitorAnalysisPrompt(
+      projectDetails.problem,
+      projectDetails.customer,
+      projectDetails.solution,
+      intialPromptResponse,
+      analysisPromptResponse,
+      fitAnalysisResponse
+    );
+    const competitorAnalysisResponse = (await getGPTResponse(
+      competitorAnalysisPrompt
+    )) as Response5;
+    return [
+      intialPromptResponse,
+      analysisPromptResponse,
+      fitAnalysisResponse,
+      leanCanvasResponse,
+      competitorAnalysisResponse,
+    ];
+  } catch (error) {
+    console.error({ error });
+    return [];
   }
 }

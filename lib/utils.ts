@@ -1,8 +1,62 @@
+import {
+  Response1,
+  Response2,
+  Response2Keys,
+  Response3,
+  Response3Key,
+  ResponseKey1,
+} from "@/types";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
+}
+
+function response1ToString(response: Response1): string {
+  const result: string[] = [];
+  result.push(
+    `${ResponseKey1.ProblemHypothesis}: ${
+      response[ResponseKey1.ProblemHypothesis]
+    }`
+  );
+  result.push(
+    `${ResponseKey1.CustomerHypothesis}: ${
+      response[ResponseKey1.CustomerHypothesis]
+    }`
+  );
+  result.push(
+    `${ResponseKey1.SolutionHypothesis}: ${
+      response[ResponseKey1.SolutionHypothesis]
+    }`
+  );
+  result.push(
+    `${ResponseKey1.EarlyAdopterHypothesis}: ${
+      response[ResponseKey1.EarlyAdopterHypothesis]
+    }`
+  );
+
+  return result.join("\n");
+}
+
+function response2ToString(response: Response2): string {
+  let result = "";
+  Object.keys(Response2Keys).forEach((key) => {
+    const responseKey = Response2Keys[key as keyof typeof Response2Keys];
+    const responseValue = response[responseKey];
+    result += `${responseKey}: ${responseValue}\n`;
+  });
+  return result.trim();
+}
+
+function response3ToString(response: Response3): string {
+  let result = "";
+  Object.keys(Response3Key).forEach((key) => {
+    const responseKey = Response3Key[key as keyof typeof Response3Key];
+    const responseValue = response[responseKey];
+    result += `${responseKey}: ${responseValue}\n`;
+  });
+  return result.trim();
 }
 
 export function generatePrompt(
@@ -49,10 +103,10 @@ ${solution}
 `;
 }
 
-export function generateAnalysisPrompt(response1: string): string {
+export function generateAnalysisPrompt(response1: Response1): string {
   return `
 Response 1:
-${response1}
+${response1ToString(response1)}
 
 Conduct a detailed analysis to evaluate the validity of each hypothesis with an initial focus on seeking evidence for invalidation. Use data and studies from established, credible sources such as academic journals, official industry reports, and major research institutions, up until 2023.
 
@@ -95,15 +149,15 @@ Your output will always be only a JSON list of validation evidence, along with e
 }
 
 export function generateFitAnalysisPrompt(
-  response1: string,
-  response2: string
+  response1: Response1,
+  response2: Response2
 ): string {
   return `
 Response 1:
-${response1}
+${response1ToString(response1)}
 
 Response 2:
-${response2}
+${response2ToString(response2)}
 
 Now, based on previous outputs:
 
@@ -130,9 +184,9 @@ export function generateLeanCanvasPrompt(
   problem: string,
   customer: string,
   solution: string,
-  response1: string,
-  response2: string,
-  response3: string
+  response1: Response1,
+  response2: Response2,
+  response3: Response3
 ): string {
   return `
 Problem
@@ -143,13 +197,13 @@ Solution
 ${solution}
 
 Response 1:
-${response1}
+${response1ToString(response1)}
 
 Response 2:
-${response2}
+${response2ToString(response2)}
 
 Response 3:
-${response3}
+${response3ToString(response3)}
 
 
 Now, based on previous inputs and outputs:
@@ -233,9 +287,9 @@ export function generateCompetitorAnalysisPrompt(
   problem: string,
   customer: string,
   solution: string,
-  response1: string,
-  response2: string,
-  response3: string
+  response1: Response1,
+  response2: Response2,
+  response3: Response3
 ): string {
   return `
 Problem
@@ -248,13 +302,13 @@ Solution
 ${solution}
 
 Response 1:
-${response1}
+${response1ToString(response1)}
 
 Response 2:
-${response2}
+${response2ToString(response2)}
 
 Response 3:
-${response3}
+${response3ToString(response3)}
 
 Now, based on previous inputs and outputs:
 1. Research the web and run a simple competitor analysis with my main competition. Use real data. List the three main competitors found, their names, country, and their USP.
