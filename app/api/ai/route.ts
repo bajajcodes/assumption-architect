@@ -1,11 +1,20 @@
 import {
+  convertResponsesToStepperItems,
   generateAnalysisPrompt,
   generateCompetitorAnalysisPrompt,
   generateFitAnalysisPrompt,
   generateLeanCanvasPrompt,
   generatePrompt,
 } from "@/lib/utils";
-import { Response1, Response2, Response3, Response4, Response5 } from "@/types";
+import {
+  Response1,
+  Response2,
+  Response3,
+  Response4,
+  Response5,
+  StepperItem,
+  StepperKey,
+} from "@/types";
 import OpenAI from "openai";
 
 const openai = new OpenAI({
@@ -46,7 +55,10 @@ async function getGPTResponse(promptContent: string) {
   }
 }
 
-export async function runAnalysis() {
+export async function runAnalysis(): Promise<Record<
+  StepperKey,
+  StepperItem[]
+> | null> {
   try {
     const intialPrompt = generatePrompt(
       projectDetails.problem,
@@ -90,15 +102,18 @@ export async function runAnalysis() {
     const competitorAnalysisResponse = (await getGPTResponse(
       competitorAnalysisPrompt
     )) as Response5;
-    return [
+
+    const stepperItems = convertResponsesToStepperItems(
       intialPromptResponse,
       analysisPromptResponse,
       fitAnalysisResponse,
       leanCanvasResponse,
-      competitorAnalysisResponse,
-    ];
+      competitorAnalysisResponse
+    );
+
+    return stepperItems;
   } catch (error) {
     console.error({ error });
-    return [];
+    return null;
   }
 }

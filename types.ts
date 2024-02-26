@@ -1,3 +1,17 @@
+export enum StepperKey {
+  HypothesisGeneration = "hypothesis_generation",
+  HypothesisValidation = "hypothesis_validation",
+  FitAnalysis = "fit_analysis",
+  LeanCanvasPreparation = "lean_canvas_preparation",
+  CompetitorAnalysis = "competitor_analysis",
+}
+
+export interface StepperItem {
+  label: string;
+  key: string;
+  value: string;
+}
+
 export enum ResponseKey1 {
   ProblemHypothesis = "Problem Hypothesis",
   CustomerHypothesis = "Customer Hypothesis",
@@ -212,3 +226,10 @@ export interface Response5 {
   [Response5Key.Competitor3USP]: string;
   [Response5Key.UnfairAdvantage]: string;
 }
+
+export type Responses =
+  | Response1
+  | Response2
+  | Response3
+  | Response4
+  | Response5;

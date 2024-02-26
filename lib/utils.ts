@@ -4,7 +4,11 @@ import {
   Response2Keys,
   Response3,
   Response3Key,
+  Response4,
+  Response5,
   ResponseKey1,
+  StepperItem,
+  StepperKey,
 } from "@/types";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
@@ -330,4 +334,50 @@ Your output will always be only a JSON list of lean canvas data, along with each
 "Unfair Advantage": ""
 }
 `;
+}
+
+export function convertResponsesToStepperItems(
+  response1: Response1,
+  response2: Response2,
+  response3: Response3,
+  response4: Response4,
+  response5: Response5
+): Record<StepperKey, StepperItem[]> {
+  const stepperItems: Record<StepperKey, StepperItem[]> = {
+    [StepperKey.HypothesisGeneration]: Object.entries(response1).map(
+      ([key, value]) => ({
+        label: key,
+        key: key,
+        value: value,
+      })
+    ),
+    [StepperKey.HypothesisValidation]: Object.entries(response2).map(
+      ([key, value]) => ({
+        label: key,
+        key: key,
+        value: typeof value === "string" ? value : JSON.stringify(value), // Because some values might not be strings
+      })
+    ),
+    [StepperKey.FitAnalysis]: Object.entries(response3).map(([key, value]) => ({
+      label: key,
+      key: key,
+      value: value,
+    })),
+    [StepperKey.LeanCanvasPreparation]: Object.entries(response4).map(
+      ([key, value]) => ({
+        label: key,
+        key: key,
+        value: typeof value === "string" ? value : JSON.stringify(value),
+      })
+    ),
+    [StepperKey.CompetitorAnalysis]: Object.entries(response5).map(
+      ([key, value]) => ({
+        label: key,
+        key: key,
+        value: value,
+      })
+    ),
+  };
+
+  return stepperItems;
 }
