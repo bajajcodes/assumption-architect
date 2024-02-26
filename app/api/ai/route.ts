@@ -15,6 +15,7 @@ import {
   StepperItem,
   StepperKey,
 } from "@/types";
+import { NextRequest, NextResponse } from "next/server";
 import OpenAI from "openai";
 
 const openai = new OpenAI({
@@ -48,17 +49,16 @@ async function getGPTResponse(promptContent: string) {
     });
     const content = chatCompletion.choices[0].message.content;
     if (!content) return null;
-    return JSON.parse(content);
+    console.log({ content });
+    return content as any;
   } catch (error) {
-    console.error({ error });
     throw error;
   }
 }
 
-export async function runAnalysis(): Promise<Record<
-  StepperKey,
-  StepperItem[]
-> | null> {
+async function runAnalysis(
+  projectDetails: Record<"problem" | "customer" | "solution", string>
+): Promise<Record<StepperKey, StepperItem[]>> {
   try {
     const intialPrompt = generatePrompt(
       projectDetails.problem,
@@ -113,7 +113,29 @@ export async function runAnalysis(): Promise<Record<
 
     return stepperItems;
   } catch (error) {
-    console.error({ error });
-    return null;
+    throw error;
   }
+}
+
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json();
+    const response = await runAnalysis(body);
+    return NextResponse.json(response, { status: 200 });
+  } catch (error: any) {
+    if (error.response) {
+      console.error(error.response.status, error.response.data);
+      return NextResponse.json({ error: error.response.data }, { status: 500 });
+    } else {
+      console.error(`Error with OpenAI API request: ${error.message}`);
+      return NextResponse.json(
+        { error: "An error occurred during your request." },
+        { status: 500 }
+      );
+    }
+  }
+}
+
+export async function GET() {
+  return NextResponse.json("Hey from /api/ai", { status: 200 });
 }

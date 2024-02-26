@@ -1,5 +1,4 @@
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
+import { LeadCollectionForm } from "@/components/leadcollectionform";
 import { cn } from "@/lib/utils";
 import React from "react";
 
@@ -14,57 +13,9 @@ export default async function Home() {
           </p>
         </div>
         <div className="flex">
-          {/* <aside className="w-10 pr-4 "> */}
           <ProgressBar steps={3} activeStepIndex={1} />
-          {/* </aside> */}
           <div className="w-3/4">
-            <form className="space-y-6">
-              <div>
-                <label
-                  className="block text-sm font-medium text-gray-700"
-                  htmlFor="customer"
-                >
-                  Who is your customer?
-                </label>
-                <Textarea
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                  id="customer"
-                  placeholder="Describe who is your target customer?"
-                  required
-                />
-              </div>
-              <div>
-                <label
-                  className="block text-sm font-medium text-gray-700"
-                  htmlFor="problem"
-                >
-                  What problem do you solve for them?
-                </label>
-                <Textarea
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                  id="problem"
-                  placeholder="Describe your problem?"
-                  required
-                />
-              </div>
-              <div>
-                <label
-                  className="block text-sm font-medium text-gray-700"
-                  htmlFor="solution"
-                >
-                  What is your proposed solution?
-                </label>
-                <Textarea
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                  id="solution"
-                  placeholder="Describe your solution?"
-                  required
-                />
-              </div>
-              <div className="flex justify-end">
-                <Button>Analyze</Button>
-              </div>
-            </form>
+            <LeadCollectionForm />
           </div>
         </div>
       </section>
