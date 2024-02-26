@@ -49,14 +49,13 @@ async function getGPTResponse(promptContent: string) {
     });
     const content = chatCompletion.choices[0].message.content;
     if (!content) return null;
-    console.log({ content });
-    return content as any;
+    return JSON.parse(content);
   } catch (error) {
     throw error;
   }
 }
 
-async function runAnalysis(
+export async function runAnalysis(
   projectDetails: Record<"problem" | "customer" | "solution", string>
 ): Promise<Record<StepperKey, StepperItem[]>> {
   try {
