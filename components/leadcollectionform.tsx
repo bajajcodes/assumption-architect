@@ -15,12 +15,22 @@ const initialState = {
 
 export function LeadCollectionForm(props: {
   updateState: (state: Record<StepperKey, StepperItem[]>) => void;
+  setActiveSteps: (value: number) => void;
+  isSubmitBtndisabled?: boolean;
 }) {
   const [state, formAction] = useFormState(
     getBussinessAsumptions,
     initialState
   );
+  const { pending, data } = useFormStatus();
   const formRef = useRef<HTMLFormElement | null>(null);
+
+  const updateActiveSteps = () => {
+    const form = formRef.current;
+    const allInputs = form ? Array.from(form.querySelectorAll("textarea")) : [];
+    const filledInputs = allInputs.filter((input) => input.value.trim() !== "");
+    props.setActiveSteps(filledInputs.length - 1);
+  };
 
   useEffect(() => {
     if (!state.success) {
@@ -33,7 +43,12 @@ export function LeadCollectionForm(props: {
   }, [state.success]);
 
   return (
-    <form className="space-y-6" action={formAction} ref={formRef}>
+    <form
+      className="w-full flex flex-col gap-4"
+      action={formAction}
+      ref={formRef}
+      onChange={updateActiveSteps}
+    >
       <div>
         <label
           className="block text-sm font-medium text-gray-700"
@@ -47,6 +62,7 @@ export function LeadCollectionForm(props: {
           placeholder="Describe who is your target customer?"
           required
           name="customer"
+          disabled={pending}
         />
       </div>
       <div>
@@ -62,6 +78,7 @@ export function LeadCollectionForm(props: {
           name="problem"
           placeholder="Describe your problem?"
           required
+          disabled={pending}
         />
       </div>
       <div>
@@ -77,18 +94,19 @@ export function LeadCollectionForm(props: {
           name="solution"
           placeholder="Describe your solution?"
           required
+          disabled={pending}
         />
       </div>
-      <SubmitButton />
+      <SubmitButton isDisabled={props.isSubmitBtndisabled} />
     </form>
   );
 }
 
-function SubmitButton() {
+function SubmitButton(props: { isDisabled?: boolean }) {
   const { pending, data } = useFormStatus();
   return (
     <div className="flex justify-end">
-      <Button aria-disabled={pending} disabled={pending}>
+      <Button aria-disabled={pending} disabled={pending || props.isDisabled}>
         Analyze
       </Button>
     </div>

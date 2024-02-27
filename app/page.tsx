@@ -1,6 +1,7 @@
 "use client";
 import { LeadCollectionForm } from "@/components/leadcollectionform";
 import { List } from "@/components/list";
+import { ProgressBar } from "@/components/progressbar";
 import { Button } from "@/components/ui/button";
 import { StepperItem, StepperKey } from "@/types";
 import { useState } from "react";
@@ -17,20 +18,22 @@ export default function Home() {
       Math.min(prevStep + 1, stepperKeys.length - 1)
     );
   };
+  const [activeStepIndex, setActiveStepIndex] = useState(-1);
 
   const handlePrevious = () => {
     setCurrentStep((prevStep) => Math.max(prevStep - 1, 0));
   };
   const currentData = state ? state[stepperKeys[currentStep]] : [];
   const label = stepperLabels[currentStep];
-
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
+    <main className="flex flex-col justify-center items-center min-h-screen p-4 md:p-24 w-full">
       {!state && (
         <FormPage
           updateState={(state: Record<StepperKey, StepperItem[]>) =>
             setState(state)
           }
+          activeStepIndex={activeStepIndex}
+          setActiveSteps={setActiveStepIndex}
         />
       )}
       {state && (
@@ -47,7 +50,15 @@ export default function Home() {
   );
 }
 
-function FormPage({ updateState }: { updateState: (state: any) => void }) {
+function FormPage({
+  updateState,
+  activeStepIndex,
+  setActiveSteps,
+}: {
+  updateState: (state: any) => void;
+  activeStepIndex: number;
+  setActiveSteps: (value: number) => void;
+}) {
   return (
     <section className="py-10 w-full">
       <div className="mb-8">
@@ -56,11 +67,13 @@ function FormPage({ updateState }: { updateState: (state: any) => void }) {
           Insert below your 3 main business assumptions
         </p>
       </div>
-      <div className="flex">
-        {/* <ProgressBar steps={3} activeStepIndex={1} /> */}
-        <div className="w-3/4">
-          <LeadCollectionForm updateState={updateState} />
-        </div>
+      <div className="flex max-w-screen-md">
+        <ProgressBar steps={3} activeStepIndex={activeStepIndex} />
+        <LeadCollectionForm
+          updateState={updateState}
+          setActiveSteps={setActiveSteps}
+          isSubmitBtndisabled={activeStepIndex < 2}
+        />
       </div>
     </section>
   );
@@ -82,7 +95,7 @@ function DataPage({
   isNextDisabled: boolean;
 }) {
   return (
-    <section>
+    <section className="py-10 w-full">
       <div className="mb-8">
         <h1 className="text-3xl font-bold">{label}</h1>
         <p className="mt-2 text-lg text-gray-600">
