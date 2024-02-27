@@ -102,14 +102,16 @@ function DataPage({
           Navigate in between prompt responses trough the stepper compoenent.
         </p>
       </div>
-      <List data={data} />
-      <div className="flex items-center justify-between mt-4">
-        <Button onClick={onPrevious} disabled={isPreviousDisabled}>
-          Previous
-        </Button>
-        <Button onClick={onNext} disabled={isNextDisabled}>
-          Next
-        </Button>
+      <div className="max-w-screen-md">
+        <List data={data} />
+        <div className="flex items-center justify-between mt-4">
+          <Button onClick={onPrevious} disabled={isPreviousDisabled}>
+            Previous
+          </Button>
+          <Button onClick={onNext} disabled={isNextDisabled}>
+            Next
+          </Button>
+        </div>
       </div>
     </section>
   );

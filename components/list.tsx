@@ -7,7 +7,7 @@ interface Props {
 
 export function List(props: Props) {
   return (
-    <section className="w-full max-w-screen-md">
+    <section className="w-full">
       <ul className="flex flex-col gap-4 h-auto max-h-[572px] overflow-scroll">
         {props.data.map((item) => (
           <ListItem {...item} key={item.key} />
