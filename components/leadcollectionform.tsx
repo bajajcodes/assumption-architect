@@ -4,6 +4,7 @@ import { getBussinessAsumptions } from "@/app/actions";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { StepperItem, StepperKey } from "@/types";
+import { Loader2 } from "lucide-react";
 import { useEffect, useRef } from "react";
 import { useFormState, useFormStatus } from "react-dom";
 
@@ -103,11 +104,17 @@ export function LeadCollectionForm(props: {
 }
 
 function SubmitButton(props: { isDisabled?: boolean }) {
-  const { pending, data } = useFormStatus();
+  const { pending } = useFormStatus();
+  const textContent = pending ? "AI Is Anaylzing, Please Wait" : "Analyze";
   return (
     <div className="flex justify-end">
-      <Button aria-disabled={pending} disabled={pending || props.isDisabled}>
-        Analyze
+      <Button
+        aria-disabled={pending}
+        disabled={pending || props.isDisabled}
+        className="w-full max-w-md mx-auto"
+      >
+        {pending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+        {textContent}
       </Button>
     </div>
   );
