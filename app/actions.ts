@@ -14,7 +14,7 @@ async function getBussinessAsumptions(
       problem: problem,
       solution: solution,
     });
-    const response = await fetch("http://localhost:3000/api/ai", {
+    const response = await fetch(`${process.env["API_BASE_URL"]}/api/ai`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
