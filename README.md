@@ -5,6 +5,7 @@
 ```env
 //.env
 	OPENAI_API_KEY={{VALUE}}
+	API_BASE_URL={{VALUE}}
 ```
 
 ```sh

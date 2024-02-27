@@ -55,7 +55,7 @@ async function getGPTResponse(promptContent: string) {
   }
 }
 
-export async function runAnalysis(
+async function runAnalysis(
   projectDetails: Record<"problem" | "customer" | "solution", string>
 ): Promise<Record<StepperKey, StepperItem[]>> {
   try {
