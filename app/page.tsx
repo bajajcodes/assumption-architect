@@ -6,9 +6,10 @@ import { Button } from "@/components/ui/button";
 import { StepperItem, StepperKey } from "@/types";
 import { useState } from "react";
 
+const stepperLabels = Object.keys(StepperKey);
+const stepperKeys = Object.values(StepperKey);
+
 export default function Home() {
-  const stepperLabels = Object.keys(StepperKey);
-  const stepperKeys = Object.values(StepperKey);
   const [state, setState] = useState<Record<StepperKey, StepperItem[]> | null>(
     null
   );

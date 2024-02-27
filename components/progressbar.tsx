@@ -9,7 +9,7 @@ export function ProgressBar(props: { steps: number; activeStepIndex: number }) {
           <CircleIcon
             key={`circleicon__${index}`}
             className={cn("text-gray-500 h-6 w-6 bg-gray-500 rounded-full", {
-              "text-green-500 bg-green-500":
+              "text-assumption bg-assumption":
                 index <= props.activeStepIndex && props.activeStepIndex > -1,
             })}
           />
