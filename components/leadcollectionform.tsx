@@ -3,6 +3,8 @@
 import { getBussinessAsumptions } from "@/app/actions";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { StepperItem, StepperKey } from "@/types";
+import { useEffect, useRef } from "react";
 import { useFormState, useFormStatus } from "react-dom";
 
 const initialState = {
@@ -11,16 +13,27 @@ const initialState = {
   solution: "",
 };
 
-export function LeadCollectionForm() {
+export function LeadCollectionForm(props: {
+  updateState: (state: Record<StepperKey, StepperItem[]>) => void;
+}) {
   const [state, formAction] = useFormState(
     getBussinessAsumptions,
     initialState
   );
+  const formRef = useRef<HTMLFormElement | null>(null);
 
-  console.log({ state });
+  useEffect(() => {
+    if (!state.success) {
+      return;
+    }
+    formRef.current?.reset();
+    const { success, ...data } = state;
+    props.updateState(data);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state.success]);
 
   return (
-    <form className="space-y-6" action={formAction}>
+    <form className="space-y-6" action={formAction} ref={formRef}>
       <div>
         <label
           className="block text-sm font-medium text-gray-700"
@@ -73,7 +86,6 @@ export function LeadCollectionForm() {
 
 function SubmitButton() {
   const { pending, data } = useFormStatus();
-  console.log({ pending, data });
   return (
     <div className="flex justify-end">
       <Button aria-disabled={pending} disabled={pending}>
