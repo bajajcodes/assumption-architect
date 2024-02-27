@@ -89,7 +89,6 @@ export async function runAnalysis(
     const leanCanvasResponse = (await getGPTResponse(
       leanCanvasPrompt
     )) as Response4;
-
     const competitorAnalysisPrompt = generateCompetitorAnalysisPrompt(
       projectDetails.problem,
       projectDetails.customer,
@@ -101,7 +100,6 @@ export async function runAnalysis(
     const competitorAnalysisResponse = (await getGPTResponse(
       competitorAnalysisPrompt
     )) as Response5;
-
     const stepperItems = convertResponsesToStepperItems(
       intialPromptResponse,
       analysisPromptResponse,
@@ -109,7 +107,6 @@ export async function runAnalysis(
       leanCanvasResponse,
       competitorAnalysisResponse
     );
-
     return stepperItems;
   } catch (error) {
     throw error;

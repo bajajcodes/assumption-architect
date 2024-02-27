@@ -16,6 +16,9 @@ export function LeadCollectionForm() {
     getBussinessAsumptions,
     initialState
   );
+
+  console.log({ state });
+
   return (
     <form className="space-y-6" action={formAction}>
       <div>
@@ -69,10 +72,13 @@ export function LeadCollectionForm() {
 }
 
 function SubmitButton() {
-  const { pending } = useFormStatus();
+  const { pending, data } = useFormStatus();
+  console.log({ pending, data });
   return (
     <div className="flex justify-end">
-      <Button aria-disabled={pending}>Analyze</Button>
+      <Button aria-disabled={pending} disabled={pending}>
+        Analyze
+      </Button>
     </div>
   );
 }
